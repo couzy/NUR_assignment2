@@ -1,0 +1,50 @@
+\section{Log Likelihood}
+For getting the best values of the parameters of the NFW-profile we use the equation of the NWF-profile:
+\begin{equation}
+n(x)=A \left(\frac{x}{b}\right)^{a-1}*exp\left(-(\frac{x}{b})^c\right).
+\end{equation}
+
+For the data from the mass-bins our data is given for the x.
+The likelihood $L$ is given with the following equation:
+\begin{equation}
+L=\displaystyle\prod_{i=0}^N{A \left(\frac{x_i}{b}\right)^{a-1}*exp\left(-(\frac{x_i}{b})^c\right)}
+\end{equation}
+We want to maximize the likelihood and this is equivalent to maximizing the log of the likelihood as the log is a strictly increasing function.
+The log makes the product of this a summation, which is easier to calculate numerically. 
+\begin{equation}
+log L=\displaystyle\sum_{i=0}^N{\log A \left(\frac{x_i}{b}\right)^{a-1}*exp\left(-(\frac{x_i}{b})^c\right)}
+\end{equation}
+The maximisation of the log L is equivalent to minimizing the negative log likelihood and we can use the downhill simplex minimization algorithm to obtain the minimum there.
+The negative log likelihood is then equal to:
+\begin{equation}
+-log L=N\log(A)+(a-1)*\left(\displaystyle\sum_{i=0}^N{\log(x_i)} -N\log(b)\right)-b^{-c}\displaystyle\sum_{i=0}^N{x_i^{c}}
+\end{equation}
+
+We use the downhill simplex method to get to the minimum in the 3 dimensions of the parameters a,b,c. The value of A depends also on a,b,c for this we use the trilinear interpolation from the second exercise to get a value for A.
+As this is an interpolator we have the problem that the simplex method can go out of the bounds of this interpolator. To counter this we set the negative log likelihood there on a high value($10^{20}$ is used in this program) so the downhill simplex will reject that volume in the parameter space.
+As we use the downhill simplex method we are sensitive to local minima, so it is possible we do not find the optimal values for our parameters a,b and c. 
+
+Finally we use the same interpolation scheme from exercise 2 and adjust it slightly to interpolate the values of a,b,c for a function of the halo mass. We again slit up the 5 points into two intervals and use Lagrangin interpolation on those intervals. The interpolation is done in log-lin space, the halo mass is done in log space, the a,b and c are in linspace.
+
+
+
+\lstinputlisting{exercise3.py}
+
+The result of the script is given by:
+
+\lstinputlisting{exercise3.txt}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{plots/interpolatea.png}
+      \caption{The interpolation of the parameter a of a function of halo mass}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{plots/interpolateb.png}
+      \caption{The interpolation of the parameter b of a function of halo mass}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{plots/interpolatec.png}
+      \caption{The interpolation of the parameter c of a function of halo mass}
+\end{figure}

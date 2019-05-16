@@ -1,0 +1,23 @@
+\section{Exercise 1}
+In this section we make simple routines, which are usefull in the latter part of the assignment.
+The first routine is the one to make a Poisson distribution. The poisson distribution is given by:
+\begin{equation}
+P(k,\lambda)=\frac{lambda^k\exp{-\lambda}}{k!}
+\end{equation}
+We generate the output for the following values of (\lambda,k)=(1,0),(5,10),(3,21),(2.6,40).
+As the k-factorial goes very large, there is danger of overflow for this distribution. To counter this we set up a power of 10 for the factorial and divide each number bigger than 10, by 10 and add then one to our counter of our power of 10.
+This lets us to work around for the overflow as some of the power gets mitigated of the k-factorial.
+
+The second routine we set up is a Random Number Generator(RNG) for the 'continuous' range(0,1). This is done with a combination of a 64-bit XOR shift and after this, use an LCG to get a better pseudo RNG. For our RNG we set the initial seed at 23, so the answers are consistent in the future. 
+
+\lstinputlisting{exercise1.py}
+
+The result of the script is given by:
+\lstinputlisting{exercise1.txt}
+
+The RNG seems to work fine on the interval (0,1) the numbers are almost evenly distributed with small fluctuations, which are normal for any finite sample.
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{plots/rng01.png}
+      \caption{The  distribution of 1 million iterations of the RNG on the interval (0,1)}
+   \end{figure}

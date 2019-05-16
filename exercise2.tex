@@ -1,0 +1,41 @@
+\section{Exercise 2}
+In this exercise we look at the NFW-profile, where satelite galaxies match the dark matter halo, this is given as a function of radius $x$ from the center up untill the virial radius, which is normalized to 5.
+\begin{equation}
+n(x)=A\langle N_{sat}\rangle \left(\frac{x}{b}\right)^{a-1}*exp\left(-(\frac{x}{b})^c\right).
+\end{equation}
+
+We first generate 3 random numbers a,b,c for this NFW-profile, with 1.1<a<2.5, 0.5<b<2 and 1.5<c<4. For this we rescale the RNG from exercise 1 and translate it accordingly to get the right distribution for each parameter.
+
+The normalisation factor for the NFW-profile is given by the A-term. This term depends on the randomly generated parameters a,b,c.
+We use the Simpsons integration method to determine the normalisation factor A. 
+
+We use the following points $(10^{-4},10^{-2},10^{-1},1,5)$ and interpolate in between of this function and represent this in log-log space.
+To interpolate we split it up into 2 parts, $(10^{-4},10^{-2},10^{-1})$ and $(10^{-1},1,5)$. For the first part we interpolate in log-log space and use the Lagrange method there, as we only use 3 points, this is a second order polynomial and there is a small chance of overfitting.
+With the second part we interpolate in linear-log space, the x space is linear, the y space is logarithmic. We use again the Lagrange method of interpolation for these 3 points. However the function is higly exponantional in the high range of $x$, this means that the function is to hard to interpolate. For the future we need more points in teh range of (1,5) to obtain a good interpolation as it is now not possible without very much knowing the actual function, and if we know, why would we interpolate?
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{plots/interpolateNFWprofile.png}
+      \caption{The interpolated values based on the 5 points given in log-log space, the first part is very linear in log-log space. The last part is exponential even in log-log space}
+\end{figure}
+\lstinputlisting{exercise2.py}
+
+After that we use Ridder's method to determine the numerical derivative and compare it to the analytical one, this one is highly accurate and we get close to the machine error.
+We then randomly generate 100 galaxies with their 3D positions, for this we use a combination of rejection and transformation sampling to get the radial distribution. We use our RNG for the angles and use the arccosine function to counter the polar bias, which comes from the $\phi$ angle.
+
+The result of the script is given by:
+
+\lstinputlisting{exercise2.txt}
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{plots/distribution.png}
+      \caption{The histogram of the rejection and transformation sampling paired with the probability distribution}
+\end{figure}
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{plots/largest_bin.png}
+      \caption{The bin with the largest number of galaxies in it, with the poisson distribution plotted over it, the poisson distribution is enlarged by a factor of 3000. The histogram seems to match the poisson distribution quite nicely. }
+\end{figure}
+
+For the final part, we calculate the value of A for our parameters a,b,c at 0.1 wide intervals in 3D. After this we use trilinear interpolation to get continuous values in our 3D cube for the value of A.
