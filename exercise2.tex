@@ -1,41 +1,33 @@
 \section{Exercise 2}
-In this exercise we look at the NFW-profile, where satelite galaxies match the dark matter halo, this is given as a function of radius $x$ from the center up untill the virial radius, which is normalized to 5.
+Now that we have a good random number generator, we simulate a density field needed for cosmological simulations. We construct this in Fourier space. We add random Gaussian complex numbers, where both the real and imaginary part of the complex number are drawn from the same Gaussian distribution. They are all centered around zero but the variance depends on the power-spectrum.
+
 \begin{equation}
-n(x)=A\langle N_{sat}\rangle \left(\frac{x}{b}\right)^{a-1}*exp\left(-(\frac{x}{b})^c\right).
+P(k)=\sigma^2
 \end{equation}
+The power-spectrum depends also on the wavenumber $k$ in Fourier space. We use the formula:
+\begin{equation}
+P(k)=k^n
+\end{equation}
+,where we will simulate the density field for $n=-1,n=-2,n=-3$ and look how they differ from each other. We first simulate it for our grid of 1024 by 1024 pixels. As our resulting density field is real, we have the symmetry that $y(k)*=y(-k)$, where $y$ is our random number in our pixels. To implement this, we only loop over half of the array and set the other one as a complex conjugate so that this symmetry is met. As the Fourier indices are different than the normal ones, there is a change shift halfway, this perfectly aligns it with the python indices, so we can take the negative indices and use the conjugate of those points.
+Finally to get a real field we have to make the 4 edge points real, this means the (0,0) mode is set to zero, the (512,0),(0,512) and(512,512) mode needs to be put to real numbers, as they need to be the complex conjugate of themselves, this can only be true if you are a real number. When these conditions are met, we can go back with the 2D ifft from scipy and renormalize with $N^2$ to get to the correct real density field. The imaginary part of all of the fields is non-zero, but it is around $10^(-16)$ before the scaling, this is very small and neglible as this comes from the machine error. For plotting purposes we only use the real part of the field.
 
-We first generate 3 random numbers a,b,c for this NFW-profile, with 1.1<a<2.5, 0.5<b<2 and 1.5<c<4. For this we rescale the RNG from exercise 1 and translate it accordingly to get the right distribution for each parameter.
-
-The normalisation factor for the NFW-profile is given by the A-term. This term depends on the randomly generated parameters a,b,c.
-We use the Simpsons integration method to determine the normalisation factor A. 
-
-We use the following points $(10^{-4},10^{-2},10^{-1},1,5)$ and interpolate in between of this function and represent this in log-log space.
-To interpolate we split it up into 2 parts, $(10^{-4},10^{-2},10^{-1})$ and $(10^{-1},1,5)$. For the first part we interpolate in log-log space and use the Lagrange method there, as we only use 3 points, this is a second order polynomial and there is a small chance of overfitting.
-With the second part we interpolate in linear-log space, the x space is linear, the y space is logarithmic. We use again the Lagrange method of interpolation for these 3 points. However the function is higly exponantional in the high range of $x$, this means that the function is to hard to interpolate. For the future we need more points in teh range of (1,5) to obtain a good interpolation as it is now not possible without very much knowing the actual function, and if we know, why would we interpolate?
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=5cm]{plots/interpolateNFWprofile.png}
-      \caption{The interpolated values based on the 5 points given in log-log space, the first part is very linear in log-log space. The last part is exponential even in log-log space}
-\end{figure}
-\lstinputlisting{exercise2.py}
-
-After that we use Ridder's method to determine the numerical derivative and compare it to the analytical one, this one is highly accurate and we get close to the machine error.
-We then randomly generate 100 galaxies with their 3D positions, for this we use a combination of rejection and transformation sampling to get the radial distribution. We use our RNG for the angles and use the arccosine function to counter the polar bias, which comes from the $\phi$ angle.
-
-The result of the script is given by:
-
-\lstinputlisting{exercise2.txt}
 
 \begin{figure}[h]
    \centering
-   \includegraphics[width=5cm]{plots/distribution.png}
-      \caption{The histogram of the rejection and transformation sampling paired with the probability distribution}
+   \includegraphics[width=5cm]{plots/FFT_1.png}
+      \caption{The density field where $P(k)=k^{-1}}
 \end{figure}
 
 \begin{figure}[h]
    \centering
-   \includegraphics[width=5cm]{plots/largest_bin.png}
-      \caption{The bin with the largest number of galaxies in it, with the poisson distribution plotted over it, the poisson distribution is enlarged by a factor of 3000. The histogram seems to match the poisson distribution quite nicely. }
+   \includegraphics[width=5cm]{plots/FFT_2.png}
+      \caption{The density field where $P(k)=k^{-2}, there is clearly some structure}
 \end{figure}
 
-For the final part, we calculate the value of A for our parameters a,b,c at 0.1 wide intervals in 3D. After this we use trilinear interpolation to get continuous values in our 3D cube for the value of A.
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{plots/FFT_3.png}
+      \caption{The density field where $P(k)=k^{-3}, there is clearly some structure}
+\end{figure}
+
+There seems to be an evolution from our density field with respect to the scaling. At $n=-3$ the most structure can be seen and the density field is clear, as small $k$ have the biggest impact now on the random field the large structure can now clearly be seen. If the density field is less dependant on $k$ so when $n=-1$, the larger $k$ also contribute, this should lead to small structure, but this cannot be really seen in the plot.
