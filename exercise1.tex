@@ -1,23 +1,39 @@
 \section{Exercise 1}
 In this section we make simple routines, which are usefull in the latter part of the assignment.
-The first routine is the one to make a Poisson distribution. The poisson distribution is given by:
-\begin{equation}
-P(k,\lambda)=\frac{lambda^k\exp{-\lambda}}{k!}
-\end{equation}
-We generate the output for the following values of (\lambda,k)=(1,0),(5,10),(3,21),(2.6,40).
-As the k-factorial goes very large, there is danger of overflow for this distribution. To counter this we set up a power of 10 for the factorial and divide each number bigger than 10, by 10 and add then one to our counter of our power of 10.
-This lets us to work around for the overflow as some of the power gets mitigated of the k-factorial.
 
-The second routine we set up is a Random Number Generator(RNG) for the 'continuous' range(0,1). This is done with a combination of a 64-bit XOR shift and after this, use an LCG to get a better pseudo RNG. For our RNG we set the initial seed at 23, so the answers are consistent in the future. 
+At first we set up is a Random Number Generator(RNG) for the 'continuous' range(0,1). This is done with a combination of a 64-bit XOR shift and after we use a Multiply with Carry on this 64-bit number and use an LCG to get a better pseudo RNG. For our RNG we set the initial seed at 23, so the answers are consistent in the future. 
 
 \lstinputlisting{exercise1.py}
+
 
 The result of the script is given by:
 \lstinputlisting{exercise1.txt}
 
-The RNG seems to work fine on the interval (0,1) the numbers are almost evenly distributed with small fluctuations, which are normal for any finite sample.
+The RNG seems to work fine on the interval (0,1) the $10^6$ numbers are almost evenly distributed with small fluctuations, which are normal for any finite sample.
 \begin{figure}[h]
    \centering
-   \includegraphics[width=5cm]{plots/rng01.png}
-      \caption{The  distribution of 1 million iterations of the RNG on the interval (0,1)}
+   \includegraphics[width=5cm]{plots/distribution.png}
+      \caption{The distribution of 1 million iterations of the RNG on the interval (0,1)}
    \end{figure}
+  
+ 
+
+ For better judgement we plot for the first 1000 numbers plotted where number $x_i$ is plotted against number $x_{i+1}$, the distribution seems very random, there is some clustering but this is not rare. There is not clear pattern by eye in this RNG.
+ 
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{plots/relative_distrng.png}
+      \caption{The distribution of first 1000 $x_i$ vs $x_{i+1}$}
+   \end{figure}
+   
+   
+  We want to use there random numbers to change the uniform RNG to a Gaussian RNG, as in the future we want our numbers to be Gaussian distributed. To go from a uniform random sample to a Gaussian random sample, we use the Box-Muller method. For each pair of random numbers, which are generated from a uniform distribution on the interval $(0,1)$, this gives back 2 random numbers, with a Gaussian distribution with $\mu=0$ and $\sigma=1$. We translate and scale these numbers to get to a different $\mu$ and $\sigma$. We then plot 1000 numbers from our Box-Muller method, with $\mu=2.4,\sigma=3$ and overplot the a true Gaussian and compare the two distributions to each other, so if our Box-Muller method is valid.
+  \begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{plots/Box_muller.png}
+      \caption{A histogram of our Box-Muller method compared to the true Gaussian, the lines are at $\pm4,\pm3,\pm2,\pm1 \sigma$
+   \end{figure}
+  
+  The random numbers follow the Gaussian fairly well, this gives us confidende that the method is working correctly. However 
+  
+  
