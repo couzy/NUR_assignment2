@@ -25,6 +25,15 @@ python3 exercise2.py > exercise2.txt
 echo "Run the third script ..."
 python3 exercise3.py > exercise3.txt
 
+# Script that saves data to a file
+echo "Run the fourth script ..."
+python3 exercise4.py > exercise4.txt
+
+# Script that saves data to a file
+echo "Run the fifth script ..."
+python3 exercise5.py > exercise5.txt
+
+
 pdflatex template.tex
 bibtex template.aux
 pdflatex template.tex
