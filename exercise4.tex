@@ -1,0 +1,19 @@
+\section{Exercise 4}
+In this exercise we will look at the Zeldovich approximation and how this affect cosmological simulations.
+In the most simple form the Zeldovich approximation is given by:
+\begin{equation}
+x(t)=q+D(t)S(q),
+\end{equation}
+here $x(t)$ s our position-vector on time $t$, $q$ is the initial position $D(t)$ is the linear growth function and $S(q)$ is the displacement vector, which does not depend on time.
+We rewrite the in terms of the scale factor $a$ which is also related to the redshift as $a=\frac{1}{1+z}$ and the equations become:
+\begin{equation}
+x(a)=q+D(a)S(q) 
+\end{equation}
+\begin{equation}
+p(a)=-(a-\Delta a)^2\dot{D}(a-\Delta a)S(q)
+\end{equation}
+, where $p$ is the momentum and $\dot{D}$ is the derivative of $D$ with respect to time. Our displacement vector $S(q)$ is given by the following FFT:
+\begin{equation}
+\mathbf{S(q)}\alpha\displaystyle\sum_{k_x=-k_max}^{k_max}\sum_{k_y=-k_max}^{k_max}\sum_{k_z=-k_max}^{k_max}{i\mathbf{k}c_k\exp(i\mathbf{k}\mathbf{q})
+\end{equation}
+
