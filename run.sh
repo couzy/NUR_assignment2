@@ -50,9 +50,14 @@ python3 exercise6.py > exercise6.txt
 echo "Run the seventh script ..."
 python3 exercise7.py > exercise7.txt
 
+echo "Making the movies for the fourth exercise..."
 
 ffmpeg -framerate 30 -pattern_type glob -i "plots/snap*.png" -s:v 640x480 -c:v libx264 -profile:v high -level 4.0 -crf 10 -tune animation -preset slow -pix_fmt yuv420p -r 25 -threads 0 -f mp4 Zeldovich2d.mp4
+ffmpeg -framerate 30 -pattern_type glob -i "plots/xsnap*.png" -s:v 640x480 -c:v libx264 -profile:v high -level 4.0 -crf 10 -tune animation -preset slow -pix_fmt yuv420p -r 25 -threads 0 -f mp4 Zeldovichxslice.mp4
+ffmpeg -framerate 30 -pattern_type glob -i "plots/ysnap*.png" -s:v 640x480 -c:v libx264 -profile:v high -level 4.0 -crf 10 -tune animation -preset slow -pix_fmt yuv420p -r 25 -threads 0 -f mp4 Zeldovichyslice.mp4
+ffmpeg -framerate 30 -pattern_type glob -i "plots/zsnap*.png" -s:v 640x480 -c:v libx264 -profile:v high -level 4.0 -crf 10 -tune animation -preset slow -pix_fmt yuv420p -r 25 -threads 0 -f mp4 Zeldovichzslice.mp4
 
+echo "Create the report"
 pdflatex template.tex
 bibtex template.aux
 pdflatex template.tex
