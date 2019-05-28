@@ -120,7 +120,7 @@ def Density_field_3(scaling=-2,N=1024,axis=0):
 	return np.fft.ifftn(fourier_field)*N**3/100
 
 def scale_integral(s_fac,omega_m=0.3,omega_l=0.7):
-	return Romberg_integration(lambda a:1/((omega_m*a**(-1)+omega_l*a**2)**(1.5)),10**(-14),s_fac,order=12)
+	return Romberg_integration(lambda a:1/((omega_m*a**(-1)+omega_l*a**2)**(1.5)),10**(-10),s_fac,order=12)
 
 def scale_derivative(s_fac,H_0=70,omega_m=0.3,omega_l=0.7):
 	scale_int=scale_integral(s_fac)

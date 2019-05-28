@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+'''
+Our NGP method take the positons and make them integer values, those are now are indices in which the mass has to be assigned.
+'''
 def NGP(particles,mass=1):
 	mass_grid=np.zeros((16,16,16))
 	for j in particles:
@@ -8,28 +11,15 @@ def NGP(particles,mass=1):
 		mass_grid[grid_points]+=1*mass
 	return mass_grid
 
+'''
+Our CIC-method. It takes the center of the cell as the the same as the NGP, then it checks for the neighbours where we have to give to assign the mass. we use the equations from http://background.uchicago.edu/~whu/Courses/Ast321_11/pm.pdf to calculate this
+
+'''
 def CIC(particles,mass=1):
 	mass_grid=np.zeros((16,16,16))	
 	for j in particles:
 		x,y,z=int(j[0]),int(j[1]),int(j[2])
-		dists=j[0]-(int(j[0])),j[1]-int(j[1]),j[2]-int(j[2])
-		steps=np.array([1,1,1])-dists
-		mass_grid[x,y,z]+=mass*steps[0]*steps[1]*steps[2]
-		mass_grid[x,(y+1)%16,z]+=mass*steps[0]*steps[2]*dists[1]
-		mass_grid[(x+1)%16,(y+1)%16,z]+=mass*dists[0]*steps[2]*dists[1]		
-		mass_grid[x,y,(z+1)%16]+=mass*steps[0]*steps[1]*dists[2]
-		mass_grid[(x+1)%16,y,(z+1)%16]+=mass*dists[0]*steps[1]*dists[2]		
-		mass_grid[x,(y+1)%16,(z+1)%16]+=mass*steps[0]*dists[2]*dists[1]
-		mass_grid[(x+1)%16,y,z]+=mass*steps[2]*steps[1]*dists[0]
-		mass_grid[(x+1)%16,(y+1)%16,(z+1)%16]+=mass*dists[0]*dists[2]*dists[1]
-	return mass_grid
-	
-
-def CIC_2(particles,mass=1):
-	mass_grid=np.zeros((16,16,16))	
-	for j in particles:
-		x,y,z=int(j[0]),int(j[1]),int(j[2])
-		dists=j[0]-(int(j[0])+0.5),j[1]-int(j[1]+0.5),j[2]-int(j[2]+0.5)
+		dists=j[0]-(x+0.5),j[1]-(y+0.5),j[2]-(z+0.5)
 		if j[0]>(int(j[0])+0.5):
 			k_x=1
 		else:
@@ -42,7 +32,8 @@ def CIC_2(particles,mass=1):
 			k_z=1
 		else:
 			k_z=-1
-		steps=np.array([0.5,0.5,0.5])-dists
+		dists =np.abs(dists)	
+		steps=1-dists
 		mass_grid[x,y,z]+=mass*steps[0]*steps[1]*steps[2]
 		mass_grid[x,(y+k_y)%16,z]+=mass*steps[0]*steps[2]*dists[1]
 		mass_grid[(x+k_x)%16,(y+k_y)%16,z]+=mass*dists[0]*steps[2]*dists[1]		
@@ -150,6 +141,10 @@ def gradient_potential(potential):
 	grad[:,:,:,2]=(np.roll(potential,1,axis=2)-np.roll(potential,-1,axis=2))/2
 	return grad
 
+'''
+This is the reverse of CIC we now assign the potential back to the particles. The code is really messy, but due to the lack of time I cannot make it any nicer soon. We get the gradient of the potential and then calculate it for each particle we give the function to at the end it gives back the list of the gradients of those particles. 
+http://background.uchicago.edu/~whu/Courses/Ast321_11/pm.pdf is used for the gradient of the particles
+'''
 def Inverse_CIC(positions,density_field):		
 	grad=gradient_potential(density_field)
 	grad_x=grad[:,:,:,0]
@@ -159,13 +154,24 @@ def Inverse_CIC(positions,density_field):
 	for x in positions:
 	
 		i,j,k=int(x[0]),int(x[1]),int(x[2])
-		dists=x[0]-(int(x[0])),x[1]-int(x[1]),x[2]-int(x[2])
-		steps=np.array([1,1,1])-dists
-
-	
-		grad_particle_x=grad_x[i,j,k]*steps[0]*steps[1]*steps[2] + grad_x[(i+1)%16,j,k]*dists[0]*steps[1]*steps[2]+grad_x[i,(j+1)%16,k]*steps[0]*dists[1]*steps[2]+grad_x[i,j,(k+1)%16]*steps[0]*steps[1]*dists[2]+grad_x[(i+1)%16,(j+1)%16,k]*dists[0]*dists[1]*steps[2]+ grad_x[(i+1)%16,j,(k+1)%16]*dists[0]*steps[1]*dists[2]+grad_x[i,(j+1)%16,(k+1)%16]*steps[0]*dists[1]*dists[2]+grad_x[(i+1)%16,(j+1)%16,(k+1)%16]*dists[0]*dists[1]*dists[2]
-		grad_particle_y=grad_y[i,j,k]*steps[0]*steps[1]*steps[2] +grad_y[(i+1)%16,j,k]*dists[0]*steps[1]*steps[2]+grad_y[i,(j+1)%16,k]*steps[0]*dists[1]*steps[2]+grad_y[i,j,(k+1)%16]*steps[0]*steps[1]*dists[2]+grad_y[(i+1)%16,(j+1)%16,k]*dists[0]*dists[1]*steps[2]+grad_y[(i+1)%16,j,(k+1)%16]*dists[0]*steps[1]*dists[2]+grad_y[i,(j+1)%16,(k+1)%16]*steps[0]*dists[1]*dists[2]+grad_y[(i+1)%16,(j+1)%16,(k+1)%16]*dists[0]*dists[1]*dists[2]
-		grad_particle_z=grad_z[i,j,k]*steps[0]*steps[1]*steps[2] +grad_z[(i+1)%16,j,k]*dists[0]*steps[1]*steps[2]+grad_z[i,(j+1)%16,k]*steps[0]*dists[1]*steps[2]+grad_z[i,j,(k+1)%16]*steps[0]*steps[1]*dists[2]+grad_z[(i+1)%16,(j+1)%16,k]*dists[0]*dists[1]*steps[2]+grad_z[(i+1)%16,j,(k+1)%16]*dists[0]*steps[1]*dists[2]+grad_z[i,(j+1)%16,(k+1)%16]*steps[0]*dists[1]*dists[2]+grad_z[(i+1)%16,(j+1)%16,(k+1)%16]*dists[0]*dists[1]*dists[2]
+		dists=x[0]-(i+0.5),x[1]-(j+0.5),x[2]-(k+0.5)
+		if x[0]>(i+0.5):
+			k_x=1
+		else:
+			k_x=-1
+		if x[1]>(j+0.5):
+			k_y=1
+		else:
+			k_y=-1
+		if x[2]>(k+0.5):
+			k_z=1
+		else:
+			k_z=-1
+		dists =np.abs(dists)	
+		steps=1-dists
+		grad_particle_x=grad_x[i,j,k]*steps[0]*steps[1]*steps[2] + grad_x[(i+k_x)%16,j,k]*dists[0]*steps[1]*steps[2]+grad_x[i,(j+k_y)%16,k]*steps[0]*dists[1]*steps[2]+grad_x[i,j,(k+k_z)%16]*steps[0]*steps[1]*dists[2]+grad_x[(i+k_x)%16,(j+k_y)%16,k]*dists[0]*dists[1]*steps[2]+ grad_x[(i+k_x)%16,j,(k+k_z)%16]*dists[0]*steps[1]*dists[2]+grad_x[i,(j+k_y)%16,(k+k_z)%16]*steps[0]*dists[1]*dists[2]+grad_x[(i+k_x)%16,(j+k_y)%16,(k+k_z)%16]*dists[0]*dists[1]*dists[2]
+		grad_particle_y=grad_y[i,j,k]*steps[0]*steps[1]*steps[2] +grad_y[(i+k_x)%16,j,k]*dists[0]*steps[1]*steps[2]+grad_y[i,(j+k_y)%16,k]*steps[0]*dists[1]*steps[2]+grad_y[i,j,(k+k_z)%16]*steps[0]*steps[1]*dists[2]+grad_y[(i+k_x)%16,(j+k_y)%16,k]*dists[0]*dists[1]*steps[2]+grad_y[(i+k_x)%16,j,(k+k_z)%16]*dists[0]*steps[1]*dists[2]+grad_y[i,(j+k_y)%16,(k+k_z)%16]*steps[0]*dists[1]*dists[2]+grad_y[(i+k_z)%16,(j+k_y)%16,(k+k_z)%16]*dists[0]*dists[1]*dists[2]
+		grad_particle_z=grad_z[i,j,k]*steps[0]*steps[1]*steps[2] +grad_z[(i+k_x)%16,j,k]*dists[0]*steps[1]*steps[2]+grad_z[i,(j+k_y)%16,k]*steps[0]*dists[1]*steps[2]+grad_z[i,j,(k+k_z)%16]*steps[0]*steps[1]*dists[2]+grad_z[(i+k_x)%16,(j+k_y)%16,k]*dists[0]*dists[1]*steps[2]+grad_z[(i+k_x)%16,j,(k+k_z)%16]*dists[0]*steps[1]*dists[2]+grad_z[i,(j+k_y)%16,(k+k_z)%16]*steps[0]*dists[1]*dists[2]+grad_z[(i+k_x)%16,(j+k_y)%16,(k+k_z)%16]*dists[0]*dists[1]*dists[2]
 		grad_particles.append([grad_particle_x,grad_particle_y,grad_particle_z])
 	return np.asarray(grad_particles)
 
@@ -297,13 +303,13 @@ x_one=np.ones(64)
 k_x=np.linspace(-31*np.pi/64,32*np.pi/64,64)
 plt.plot(k_x,np.fft.fftshift(FFT_recursive(x_one).real),label='own FFT')
 plt.plot(k_x,np.fft.fftshift(np.fft.fft(x_one).real),label='numpy FFT',linestyle='dashed')
+plt.axvline(0,label='analytical solution')
 plt.xlabel('k_x')
 plt.ylabel('FFT')
 plt.title('Real part of our FFT and the numpy one')
 plt.legend()
 plt.savefig('plots/FFT1D.png')
 plt.close()
-
 
 
 '''
@@ -326,27 +332,30 @@ plt.close()
 
 x=y=z=np.linspace(-2,2,32)
 multivariate_gaussian=np.zeros((32,32,32))
-multivariate_gaussian[:,:,:]=1/((2*np.pi)**(3/2))*np.exp(-(x**2+y**2+z**2)/2)
+multivariate_gaussian[:,:,:]=10**(5)/((2*np.pi)**(3/2))*np.exp(-(x**2+y**2+z**2)/2)
 
 '''
 Make the plots of the 3D FFT
 '''
 
-plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).real)[15,:,:])
+plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).abs)[15,:,:])
+plt.colorbar()
 plt.xlabel('k_y')
 plt.ylabel('k_z')
 plt.title('y-z slice multivariate gaussian')
 plt.savefig('plots/FFTnpyz.png')
 plt.close()
 
-plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).real)[:,15,:])
+plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).abs)[:,15,:])
+plt.colorbar()
 plt.xlabel('k_x')
 plt.ylabel('k_z')
 plt.title('x-z slice multivariate gaussian')
 plt.savefig('plots/FFTnpxz.png')
 plt.close()
 
-plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).real)[:,:,15])
+plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).abs)[:,:,15])
+plt.colorbar()
 plt.xlabel('k_x')
 plt.ylabel('k_y')
 plt.title('x-y slice multivariate gaussian')
@@ -356,21 +365,24 @@ plt.close()
 '''
 Making the numpy 3D FFT plots
 '''
-plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).real)[15,:,:])
+plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).abs)[15,:,:])
+plt.colorbar()
 plt.xlabel('k_y')
 plt.ylabel('k_z')
 plt.title('y-z slice multivariate gaussian')
 plt.savefig('plots/FFTyz.png')
 plt.close()
 
-plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).real)[:,15,:])
+plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).abs)[:,15,:])
+plt.colorbar()
 plt.xlabel('k_x')
 plt.ylabel('k_z')
 plt.title('x-z slice multivariate gaussian')
 plt.savefig('plots/FFTxz.png')
 plt.close()
 
-plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).real)[:,:,15])
+plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).abs)[:,:,15])
+plt.colorbar()
 plt.xlabel('k_x')
 plt.ylabel('k_y')
 plt.title('x-y slice multivariate gaussian')
@@ -379,10 +391,10 @@ plt.close()
 
 
 '''
-Calculate the potential for 5f
+Calculate the potential for 5f and normalize it with 16**3 for our inverse Fourier transform.
 
 '''
-potential=Potential_calculation(positions).real
+potential=Potential_calculation(positions).real/(16**3)
 
 '''
 Make the plots of the slices for z=4,9,11,14
@@ -418,14 +430,16 @@ plt.xlabel('x_grid')
 plt.ylabel('z_grid')
 plt.title('potential for y=8')
 plt.savefig('plots/potentialcenter_y.png')
-plt.clf()
+plt.close()
 plt.imshow(potential[8,:,:])
 plt.xlabel('y_grid')
 plt.ylabel('z_grid')
 plt.title('potential for x=8')
 plt.savefig('plots/potentialcenter_x.png')
-plt.clf()
-
+plt.close()
+'''
+Calculate the gradient of the particles for 5g
+'''
 
 print('gradient of the potential for the first 10 particles',Inverse_CIC(positions[:10],potential))
 
