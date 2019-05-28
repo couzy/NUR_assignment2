@@ -56,7 +56,7 @@ Now we want to calculate the derivative of $D$ as we want to know the momentum i
 
 We use the chain-rule and the fundamental theorem of calculus:
 \begin{equation}
-    \dot{D}=\dot{a}\left(\frac{-15\Omega_m^2}{4a^4\sqrt{\Omega_m(a)^{-3}+\Omega_{\Lambda}}}\displaystyle\int_{0}^{a}{\frac{1}{\left(\Omega_ma'^{-1}+a^2\Omega_{\Lambda}\right)^{3/2}}da}+\frac{5\Omega_m}{2}\sqrt{\Omega_m(a)^{-3}+\Omega_{\Lambda}}*\frac{1}{\left(\Omega_ma^{-1}+a^2\Omega_{\Lambda}\right)^{3/2}}   \right)
+    \dot{D}=\dot{a}\left(\frac{-15\Omega_m^2}{4a^4\sqrt{\Omega_m(a)^{-3}+\Omega_{\Lambda}}}\displaystyle\int_{0}^{a}{\frac{1}{\left(\Omega_ma'^{-1}+a'^2\Omega_{\Lambda}\right)^{3/2}}da'}+\frac{5\Omega_m}{2}\sqrt{\Omega_m(a)^{-3}+\Omega_{\Lambda}}*\frac{1}{\left(\Omega_ma^{-1}+a^2\Omega_{\Lambda}\right)^{3/2}}   \right)
 \end{equation}
 
 As this derivative is not analytical due to the integral we cannot calculate, we again use Romberg integration to calculate it. For the final part we use that $\dot{a}(z)=H(z)a(z)$ and use a value of $H_0=70km/s/Mpc$ for the Hubble constant at the present.
@@ -68,7 +68,7 @@ The output of this exercise is given by:
 \subsection{Exercise 4c}
 Now we want to apply the Zeldovich approximation to a box of particles. We make a square grid of 64 by 64 particles, where the spacing is 1 Mpc with the periodic boundary conditions, so if you go to the end of the grid you come back at the other side, and evolve the particles from $a=0.0025$ to $a=1$ in a 100 steps linear in the scale-factor $a$. For each time step we calculate the linear growth function $D(a)$, to calculate the position of our particles. The particles then movie according to the Zeldovich approximation. We then calculate $S(\textbf{q})$, this comes from the 2D inverse FFT from numpy. We again make an Gaussian density field, similar to a method used in exercise 2. We loop over half the x-values and all of the y-values of our density field in Fourier-space, then we calculate the $k_x$ and $k_y$ vectors, for those grid points, and get 2 Gaussian distributed numbers $a_k,b_k$ from the Box Muller method. We then compute $c_k=\frac{a_k-ib_k}{2}$, where the formula for $a_k$ is the following
 \begin{equation}
-    a_k=\sqrt{P(k}\frac{Gauss(0,1)}{k^2}
+    a_k=\sqrt{P(k)}\frac{Gauss(0,1)}{k^2}
 \end{equation}
 , $b_k$ is generated in the same way as $a_k$ but they are different numbers. For our $S(\textbf{q})$-field in the x-direction we take the IFFT of our $k_x*c_k$, and again apply the symmetry so that our resulting field turns real again. For our $S(\textbf{q})$ in the y-direction we take the IFFT of $k_y*c_k$. The momentum is calculated with the same $S(\textbf{q})$, and now we use the derivate of exercise 4b to get to the final answer.
 We make a movie of a these time-steps and look how it evolves. The movie seems to be quite fast, there is some structure in the beginning, but it quickly vanishes, because all the particles move in a linear direction from where they have started. We also plot the position and the momenta for the first 10 particles in the y-direction. There is probably a mistake in the normalization of the density field, we changed the power-spectrum scaling a bit with a factor of 10 to make the movie better to watch. We also did not make a correct calculation of our $c_k$, as it should be the same if the $k-vector$ is the same, we did not yet implement this correctly, because of the impending deadline of this assignment. This can cause the approximation be less valid than it should.
