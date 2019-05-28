@@ -9,25 +9,23 @@ The power-spectrum depends also on the wavenumber $k$ in Fourier space. We use t
 P(k)=k^n
 \end{equation}
 ,where we will simulate the density field for $n=-1,n=-2,n=-3$ and look how they differ from each other. We first simulate it for our grid of 1024 by 1024 pixels. As our resulting density field is real, we have the symmetry that $y(k)*=y(-k)$, where $y$ is our random number in our pixels. To implement this, we only loop over half of the array and set the other one as a complex conjugate so that this symmetry is met. As the Fourier indices are different than the normal ones, there is a change shift halfway, this perfectly aligns it with the python indices, so we can take the negative indices and use the conjugate of those points.
-Finally to get a real field we have to make the 4 edge points real, this means the (0,0) mode is set to zero, the (512,0),(0,512) and(512,512) mode needs to be put to real numbers, as they need to be the complex conjugate of themselves, this can only be true if you are a real number. When these conditions are met, we can go back with the 2D ifft from scipy and renormalize with $N^2$ to get to the correct real density field. The imaginary part of all of the fields is non-zero, but it is around $10^(-16)$ before the scaling, this is very small and neglible as this comes from the machine error. For plotting purposes we only use the real part of the field.
+Finally to get a real field we have to make the 4 edge points real, this means the (0,0) mode is set to zero, the (512,0),(0,512) and(512,512) mode needs to be put to real numbers, as they need to be the complex conjugate of themselves, this can only be true if you are a real number. When these conditions are met, we can go back with the 2D ifft from scipy and renormalize with $N^2$ to get to the correct real density field. The imaginary part of all of the fields is non-zero, but it is around $10^(-16)$ before the scaling, this is very small and negligible as this comes from the machine error. For plotting purposes we only use the real part of the field.
 
 
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=5cm]{plots/FFT_1.png}
-      \caption{The density field where $P(k)=k^{-1}}
+\begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/FFT_1.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/FFT_2.png} }}%
+    \caption{Two Gaussian density fields, on the left for $P(k)=k^{-1}$ and the right for $P(k)=k^{-2}$}
+    \label{fig:fourier}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}
    \centering
-   \includegraphics[width=5cm]{plots/FFT_2.png}
-      \caption{The density field where $P(k)=k^{-2}, there is clearly some structure}
-\end{figure}
-
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=5cm]{plots/FFT_3.png}
-      \caption{The density field where $P(k)=k^{-3}, there is clearly some structure}
+   \includegraphics[width=7cm]{plots/FFT_3.png}
+      \caption{The density field where $P(k)=k^{-3}$, there is clearly some structure in this density field as the longer structures get more visible.}
 \end{figure}
 
 There seems to be an evolution from our density field with respect to the scaling. At $n=-3$ the most structure can be seen and the density field is clear, as small $k$ have the biggest impact now on the random field the large structure can now clearly be seen. If the density field is less dependant on $k$ so when $n=-1$, the larger $k$ also contribute, this should lead to small structure, but this cannot be really seen in the plot.
+\lstinputlisting{exercise2.py}

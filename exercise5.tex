@@ -1,0 +1,151 @@
+\section{Exercise 5}
+In this exercise we will talk about the mass assignment schemes.
+\subsection{Exercise 5a}
+The first mass assignment scheme is the nearest grid point method (NGP). This takes the particle and assigns the mass to the nearest neighbour of the grid points. We build a 16x16x16 grid in 3 dimensions and assume that the points are in this sub-exercise are at the half points, so the first point is $(0.5,0.5,0.5)$. The assignment is then the following we take the position of our particles and then take the integer values of those positions as done in Python. This is then the index of our 3-dimensional array where we assign the mass to. 
+In the plots you can see the mass assignment scheme for the NGP, for the x-y plane with z-values of 4,9,11 and 14.
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/NGP_4.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/NGP_9.png} }}%
+    \caption{Mass assignment scheme with NGP in the x-y grid for z=4 and z=9.}
+
+  \end{figure}
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/NGP_11.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/NGP_14.png} }}%
+    \caption{Mass assignment scheme with NGP in the x-y grid for z=11 and z=14.}
+  \end{figure}
+
+\subsection{Exercise 5b}
+We will check the robustness of our implementation and let a particle go in the x-direction from 0 to 16, which is our boundary and see how the mass in cell 4 is assigned, we repeat this for cell 0. In the figure \ref{robust}, the behaviour is a step function, so only if we are in the cell all the mass is assigned, otherwise it is zero. The plots confirm that our implementation is robust.
+
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/NGP0.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/NGP4.png} }}%
+    \caption{Mass assignment scheme for 1 dimension for cell 0 and for cell 4.}
+    \label{robust}
+  \end{figure}
+
+
+\subsection{Exercise 5c}
+The second mass assignment scheme is the Cloud in Cell(CIC) method. For this method we do not assign all the mass of the particle to 1 grid point, but rather assign the mass to the neighbouring points, where more mass is assigned to a point if it is closer by. For implementation we use the formulas from \url{http://background.uchicago.edu/~whu/Courses/Ast321_11/pm.pdf}. 
+
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/CIC_4.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/CIC_9.png} }}%
+    \caption{Mass assignment scheme CIC in the x-y grid for z=4 and z=9.}
+
+  \end{figure}
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/CIC_11.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/CIC_14.png} }}%
+    \caption{Mass assignment scheme in CIC the x-y grid for z=11 and z=14.}
+  \end{figure}
+
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/CICcell0.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/CICcell_4.png} }}%
+    \caption{Mass assignment scheme CIC in 1 dimension for cell 0 and cell 4}
+  \end{figure}
+  
+\subsection{Exercise 5d}
+We will now write our own 1dimensional FFT algorithm, we use a recursive algorithm with no use of the bit-reversal. We keep splitting the array in even and odd parts and then take the Fourier transform of that with the following update steps:
+
+    
+\begin{equation}
+\begin{split}
+&FFT_{even}=FFT_{even}+FFT_{odd}\exp(2\pi i*k/N) \\
+&FFT_{odd}=FFT_{even}-FFT_{odd}\exp(2\pi i*k/N) 
+\end{split}
+\end{equation}
+
+We check our own FFT algorithm with a simple function. We use a constant function of ones, to see if it works and compare it with the numpy version of the FFT-algorithm. The Fourier Transform of  constant function is a delta function, and our results are consistent with the numpy version of the FFT. In the end, we also test for a small amount of random numbers so we are assured that our FFT is correct. The figure  from our FFT look exactly the same as those from numpy, this reassures that we have a functional FFT-algorithm. We only plot the real values below, all the complex values are zero, so this will not affect the result.
+
+\begin{figure}
+    \centering
+    \includegraphics{plots/FFT1D.png}
+    \caption{The 1D FFT compared to the numpy one, for the real part. They match extremely well.}
+    \label{fig:my_label}
+\end{figure}
+
+
+\subsection{Exercise 5e}
+After this we generalize our FFT algorithm from 1 dimension to 2 and 3 dimensions. For the 2D-FFT we first loop trough our columns and use our recursive FFT-algorithm and then loop over the rows and use our 1-D FFT-algorithm again. This is not yet coded up efficiently but it does the trick for small arrays. For 3D we first do all the y-z planes in the 2D algorithm and then loop over the remaining x-values to get a 3D algorithm. Again it is not very efficient, but it does the work. In the future it should be vectorized so the time for these computations can be reduced. For the test of our 2D FFT we again have a square of ones and compare our FFT with the numpy version of the 2D FFT, they match perfectly as can be seen in figure \ref{2dfft}.
+
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/FFT_2D.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/FFTnumpy_2D.png} }}%
+    \caption{The FFT of our arrays of ones, on the left our own 2D FFT, on the right the numpy version. It seems like a perfect Dirac-Delta function.}
+    \label{2dfft}
+  \end{figure}
+
+We will test our 3D FFT, with a multivariate Gaussian, we take the center of this Gaussian at $(0,0,0)$ and $\sigma_x=\sigma_y=\sigma_z=1$. We then takes slices of the center for all the 2D-planes, and compare it with the numpy version of the N-dimensional-FFT.
+
+
+
+\begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/FFTxy.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/FFTnpxy.png} }}%
+    \caption{The FFT of our multivariate Gaussian in our x-y slice, the left is our own 3D FFT, the right is the numpy version we have taken the 16th slice of 32 slices.}
+    \label{3dfftxy}
+  \end{figure}
+  
+  \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/FFTxz.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/FFTnpxz.png} }}%
+    \caption{The FFT of our multivariate Gaussian, in the x-z slice. The left is our own 3D FFT, the right is the numpy version, we have taken the 16th slice of 32 slices.}
+    \label{3dfftxz}
+  \end{figure}
+  
+  \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/FFTyz.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/FFTnpyz.png} }}%
+    \caption{The FFT of our multivariate Gaussian, in the y-z slice, the left is our own 3D FFT, the right is the numpy version we have taken the 16th slice of 32 slices.}
+    \label{3dfftyz}
+  \end{figure}
+ If we look at the figures \ref{3dfftxy},\ref{3dfftxz},\ref{3dfftyz} we see that our FFT implementation agrees with the numpy version. But we cannot see really a Gaussian at the center of either of these planes. even if we only have the left half, we would still expect to see some sort of Gaussian tail. Maybe we do not have enough modes to get enough resolution to transform this back to a Gaussian. In the future we should give it more points so the FFT can better reproduce the Gaussian in the Fourier plane.
+
+\subsection{Exercise 5f}
+We use the Cloud in Cell mass assignment scheme to create a density field. We then take the 3D-Fourier transform of this field with our own method. Then we loop over the cube and divide each point by the length of the k-vector squared. After this we take the inverse 3D-Fourier transform, again we take the real part as the imaginary part is of the order of $10^{-12}$. We now show the potential in the x-y slices, with values of z as 4,9,11 and 14.
+
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/potential4.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/potential9.png} }}%
+    \caption{The potential for x-y slice with z=4 on the left and z=9 on the right.}
+  \end{figure}
+
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/potential11.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/potential14.png} }}%
+    \caption{The potential for x-y slice with z=11 on the left and z=14 on the right.}
+  \end{figure}
+  
+  \subsection{Exercise 5g}
+  Finally we want to compute the gradient of the potential. For this we will use the mid point rule, as this is a method to get a derivative. For the gradient in the x-direction we shift our array 1 place in the positive direction and the negative direction. After this we take the difference and divide it by 2. This gives us an approximation for the gradient of the potential. This procedure is then repeated for the y and z directions so we get a 3D-gradient. 
+  When we have a gradient for the grid, we use a reverse Cloud in Cell method to give the potential back to the particles, we use the formula's from \url{http://background.uchicago.edu/~whu/Courses/Ast321_11/pm.pdf} and compute the potential for the first 10 particles. and output those.
+  
+  
+  \lstinputlisting{exercise5.py}

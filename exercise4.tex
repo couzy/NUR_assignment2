@@ -1,19 +1,97 @@
 \section{Exercise 4}
 In this exercise we will look at the Zeldovich approximation and how this affect cosmological simulations.
+
+\subsection{Exercise 4a}
 In the most simple form the Zeldovich approximation is given by:
 \begin{equation}
-x(t)=q+D(t)S(q),
+\mathbf{x}(t)=\mathbf{q}+D(t)\mathbf{S(q)},
 \end{equation}
-here $x(t)$ s our position-vector on time $t$, $q$ is the initial position $D(t)$ is the linear growth function and $S(q)$ is the displacement vector, which does not depend on time.
+here $\mathbf{x}(t)$ s our position-vector on time $t$, $\mathbf{q}$ is the initial position $D(t)$ is the linear growth function and $\mathbf{S(q)}$ is the displacement vector, which does not depend on time.
 We rewrite the in terms of the scale factor $a$ which is also related to the redshift as $a=\frac{1}{1+z}$ and the equations become:
 \begin{equation}
-x(a)=q+D(a)S(q) 
+\mathbf{x}(a)=\mathbf{q}+D(a)\mathbf{S(q)} 
 \end{equation}
 \begin{equation}
-p(a)=-(a-\Delta a)^2\dot{D}(a-\Delta a)S(q)
+\mathbf{p}(a)=-(a-\Delta a)^2\dot{D}(a-\Delta a)\mathbf{S(q)}
 \end{equation}
-, where $p$ is the momentum and $\dot{D}$ is the derivative of $D$ with respect to time. Our displacement vector $S(q)$ is given by the following FFT:
+, where $\mathbf{p}$ is the momentum and $\dot{D}$ is the derivative of $D$ with respect to time. Our displacement vector $\mathbf{S(q)}$ is given by the following FFT:
 \begin{equation}
-\mathbf{S(q)}\alpha\displaystyle\sum_{k_x=-k_max}^{k_max}\sum_{k_y=-k_max}^{k_max}\sum_{k_z=-k_max}^{k_max}{i\mathbf{k}c_k\exp(i\mathbf{k}\mathbf{q})}
+\mathbf{S(q)}=\alpha\displaystyle\sum_{k_x=-k_max}^{k_max}\sum_{k_y=-k_max}^{k_max}\sum_{k_z=-k_max}^{k_max}{i\mathbf{k}c_k\exp(i\mathbf{k}\cdot\mathbf{q})}
 \end{equation}
 
+If we want to apply the Zeldovich approximation we need to calculate our linear grwoth factor $D(t)$, this is given by the following integral:
+\begin{equation}
+    D(z)=\frac{5\Omega_m H_0^2}{2}H(z)\displaystyle\int_{z}^{\infty}{\frac{1+z'}{H^3(z')}dz'}
+\end{equation}
+, where $z$ is the redshift, $\Omega_m$ is the matter-density of the Universe at the present at 0.3 and $H_0$ is the Hubble constant at $z=0$. $H(z)$ is the redshift dependant Hubble-constant wcich goes as:
+\begin{equation}
+    H^2(z)=H_0^2\left(\Omega_m(1+z)^3+\Omega_{\Lambda}\right)
+\end{equation}
+, here $\Omega_{\Lambda}$ is the dark energy density of the Universe which we take at 0.7.
+We want to calculate this integral at $z=50$, we rewrite this in terms of the coordinate $a$ as $a=\frac{1}{1+z}$
+\begin{equation}
+    dz=-\frac{1}{a^2}da
+\end{equation}
+\begin{equation}
+    D(a)=\frac{5\Omega_m H_0^2}{2}H(a)\displaystyle\int_{0}^{a}{\frac{1}{a'^3H^3(a')}da'}
+\end{equation}
+The integral boundaries change from $50$ to infinity to $0$ to $1/51$.
+
+\begin{equation}
+    D(a)=\frac{5\Omega_m H_0^3}{2}\sqrt{\Omega_m(a)^{-3}+\Omega_{\Lambda}}\displaystyle\int_{0}^{a}{\frac{1}{a'^3H_0^3\left(\Omega_m(a')^{-3}+\Omega_{\Lambda}\right)^{3/2}}da'}
+\end{equation}
+\begin{equation}
+    D(a=1/51)=\frac{5\Omega_m}{2}\sqrt{\Omega_m(a)^{-3}+\Omega_{\Lambda}}\displaystyle\int_{0}^{1/51}{\frac{1}{a'^3\left(\Omega_m(a')^{-3}+\Omega_{\Lambda}\right)^{3/2}}da'}
+\end{equation}
+This is an integral that cannot be solved numerically, we use Romberg integration to solve this integral. There is a singular point at zero for this integral, so we have to work around this point. If we take the limit $a\rightarrow 0$ of the function $\frac{1}{\left(\Omega_m(a)^{-1}+\Omega_{\Lambda}a^2\right)^{3/2}}$. The leading factor in the denominator will be $\Omega_m a^{-1}$, this will go to infinity and the whole function will go to zero because of this. So at $a=0$, the function approaches zero. We then take a very tiny step to the right and begin integration at $10^{-11}$, as the function is not rising very fast and bounded by 1, we make an error of at most $10^{-11}$, which is quite small.
+
+
+
+
+\subsection{Exercise 4b}
+Now we want to calculate the derivative of $D$ as we want to know the momentum in the Zeldovich approximation. We do not know the direct derivative but use the chain rule as:
+\begin{equation}
+    \dot{D}=\frac{dD}{da}\dot{a}
+\end{equation}
+
+We use the chain-rule and the fundamental theorem of calculus:
+\begin{equation}
+    \dot{D}=\dot{a}\left(\frac{-15\Omega_m^2}{4a^4\sqrt{\Omega_m(a)^{-3}+\Omega_{\Lambda}}}\displaystyle\int_{0}^{a}{\frac{1}{\left(\Omega_ma'^{-1}+a^2\Omega_{\Lambda}\right)^{3/2}}da}+\frac{5\Omega_m}{2}\sqrt{\Omega_m(a)^{-3}+\Omega_{\Lambda}}*\frac{1}{\left(\Omega_ma^{-1}+a^2\Omega_{\Lambda}\right)^{3/2}}   \right)
+\end{equation}
+
+As this derivative is not analytical due to the integral we cannot calculate, we again use Romberg integration to calculate it. For the final part we use that $\dot{a}(z)=H(z)a(z)$ and use a value of $H_0=70km/s/Mpc$ for the Hubble constant at the present.
+
+
+
+\subsection{Exercise 4c}
+Now we want to apply the Zeldovich approximation to a box of particles. We make a square grid of 64 by 64 particles, where the spacing is 1 Mpc with the periodic boundary conditions, so if you go to the end of the grid you come back at the other side, and evolve the particles from $a=0.0025$ to $a=1$ in a 100 steps linear in the scale-factor $a$. For each time step we calculate the linear growth function $D(a)$, to calculate the position of our particles. The particles then movie according to the Zeldovich approximation. We then calculate $S(\textbf{q})$, this comes from the 2D inverse FFT from numpy. We again make an Gaussian density field, similar to a method used in exercise 2. We loop over half the x-values and all of the y-values of our density field in Fourier-space, then we calculate the $k_x$ and $k_y$ vectors, for those grid points, and get 2 Gaussian distributed numbers $a_k,b_k$ from the Box Muller method. We then compute $c_k=\frac{a_k-ib_k}{2}$, where the formula for $a_k$ is the following
+\begin{equation}
+    a_k=\sqrt{P(k}\frac{Gauss(0,1)}{k^2}
+\end{equation}
+, $b_k$ is generated in the same way as $a_k$ but they are different numbers. For our $S(\textbf{q})$-field in the x-direction we take the IFFT of our $k_x*c_k$, and again apply the symmetry so that our resulting field turns real again. For our $S(\textbf{q})$ in the y-direction we take the IFFT of $k_y*c_k$. The momentum is calculated with the same $S(\textbf{q})$, and now we use the derivate of exercise 4b to get to the final answer.
+We make a movie of a these time-steps and look how it evolves. The movie seems to be quite fast, there is some structure in the beginning, but it quickly vanishes, because all the particles move in a linear direction from where they have started. We also plot the position and the momenta for the first 10 particles in the y-direction. There is probably a mistake in the normalization of the density field, we changed the power-spectrum scaling a bit with a factor of 10 to make the movie better to watch. We also did not make a correct calculation of our $c_k$, as it should be the same if the $k-vector$ is the same, we did not yet implement this correctly, because of the impending deadline of this assignment. This can cause the approximation be less valid than it should.
+
+\begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/ymomentum.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/ypos.png} }}%
+    \caption{On the left the momentum of the first 10 particles, on the right the position.}
+    \label{fig:z}
+\end{figure}
+
+
+\subsection{Exercise 4d}
+We now want to make a 3d box of 64 by 64 by 64 particles with a spacing of 1 Mpc. We use the Zeldovich approximation on this grid again, by making a 3D density field. Thus we do the same steps as we did in exercise 4c. Only now we make a 3D Gaussian density field. We again apply the same symmetry so the resulting field is real. Only no we have to worry about 3 dimensions.
+and let it evolve, we use masks to generate 3 movies of a x-y slice, x-z slice and y-z slice at the center of the particles. At the end we have the plot for the momentum and the position in the z-direction for the first 10 particles in the z-direction. It seems 
+
+\begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/zmomentum.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/zpos.png} }}%
+    \caption{On the left the momentum of the first 10 particles, on the right the position.}
+    \label{fig:z}
+\end{figure}
+
+\lstinputlisting{exercise4.py}

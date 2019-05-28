@@ -30,9 +30,9 @@ It has the following analytical solution:
 D(t)=c_1*t^{2/3}+c_2/t
 \end{equation}
 
-With our initial conditions of 
-$D(1)=3,D'(1)=2$ we get $c_1=3,c_2=0$
-$D(1)=10,D'(1)=-10$ $c_1=0,c_2=10$
+With our initial conditions of.
+$D(1)=3,D'(1)=2$ we get $c_1=3,c_2=0$\\
+$D(1)=10,D'(1)=-10$ $c_1=0,c_2=10$\\
 $D(1)=5,D'(1)=0$ we get $c_1=3,c_2=2$
 
 We also apply a numerical scheme to this ordinary differential equation, because some ODE's do not have analytical solutions, we use the fourth order Runge-Kutta method to tackle this problem. For this we go from a single second order differential equations to 2 first order differential equations which are coupled. We define $\frac{dD}{dt}=z(t)$
@@ -41,28 +41,30 @@ And then we get then as second equation for $z(t)$:
 \frac{dz}{dt}=\frac{-4}{3t}z+\frac{2}{3t^2}D
 \end{equation}
 
-We apply the Runge-Kutta method to both ODE's and integrate from t=1 to t=1000, with a timestep of $\Delta t=0.01$, for all 3 the initial values our Runge-Kutta method will be compared to the analytical solution.
+We apply the Runge-Kutta method to both ODE's and integrate from t=1 to t=1000, with a timestep of $\Delta t=0.01$year, for all 3 the initial values our Runge-Kutta method will be compared to the analytical solution.
+
+%\lstinputlisting{exercise3.py}
+
+
+%\lstinputlisting{exercise3.txt}
+
+
+\begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=7cm]{plots/RK_1.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/RK_2.png} }}%
+    \caption{Two of our solutions of the Runge-Kutta method compared to the analytical solution.}
+    \label{fig:rk}
+\end{figure}
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=7cm]{plots/RK_3.png}
+      \caption{Comparison of Runge-Kutta to the analytical solution}
+\end{figure}
+
+
+All of the Runge-Kutta methods work very well, there seems no mismatch of the Runge-Kutta method with the analytical solution. So this means that the fourth order already seems a very robust method, this is probably why this is the standard order.
 
 \lstinputlisting{exercise3.py}
-
-The result of the script is given by:
-
-\lstinputlisting{exercise3.txt}
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=5cm]{plots/RK_1.png}
-      \caption{Comparison of Runge-Kutta to the analytical solution}
-\end{figure}
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=5cm]{plots/RK_2.png}
-      \caption{Comparison of Runge-Kutta to the analytical solution}
-\end{figure}
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=5cm]{plots/RK_3.png}
-      \caption{Comparison of Runge-Kutta to the analytical solution}
-\end{figure}
-
-
-All of the Runge-Kutta methods work very well, there seems no mismatch of the Runge-Kutta method with the analytical solution. So this means that the fourth order already seems a very robust method, this is probabily why this is the standard order.

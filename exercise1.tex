@@ -1,39 +1,171 @@
 \section{Exercise 1}
 In this section we make simple routines, which are usefull in the latter part of the assignment.
 
+\subsection{Exercise 1a}
 At first we set up is a Random Number Generator(RNG) for the 'continuous' range(0,1). This is done with a combination of a 64-bit XOR shift and after we use a Multiply with Carry on this 64-bit number and use an LCG to get a better pseudo RNG. For our RNG we set the initial seed at 23, so the answers are consistent in the future. 
 
-\lstinputlisting{exercise1.py}
 
-
-The result of the script is given by:
-\lstinputlisting{exercise1.txt}
+%\lstinputlisting{exercise1.txt}
 
 The RNG seems to work fine on the interval (0,1) the $10^6$ numbers are almost evenly distributed with small fluctuations, which are normal for any finite sample.
 \begin{figure}[h]
    \centering
-   \includegraphics[width=5cm]{plots/distribution.png}
+   \includegraphics[width=10cm]{plots/distribution.png}
       \caption{The distribution of 1 million iterations of the RNG on the interval (0,1)}
    \end{figure}
   
  
-
- For better judgement we plot for the first 1000 numbers plotted where number $x_i$ is plotted against number $x_{i+1}$, the distribution seems very random, there is some clustering but this is not rare. There is not clear pattern by eye in this RNG.
+ For better judgment we plot for the first 1000 numbers plotted where number $x_i$ is plotted against number $x_{i+1}$, the distribution seems very random, there is some clustering but this is not rare. There is not clear pattern by eye in this RNG. The plot fo our first 1000 numbers also do not hold a clear pattern. There is some clustering and dome white space, but it seems decent.
  
-\begin{figure}[h]
+\begin{figure}
    \centering
-   \includegraphics[width=5cm]{plots/relative_distrng.png}
-      \caption{The distribution of first 1000 $x_i$ vs $x_{i+1}$}
-   \end{figure}
-   
-   
+   \subfloat{{\includegraphics[width=7cm]{plots/relative_distrng.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=7cm]{plots/numbers1000.png} }}%
+    \caption{The plot of $x_i$ vs $x_{i+1}$ for the first 1000 random numbers on the left, and the first 1000 random numbers on the right. }
+    \end{figure}
+    
+    
+  \subsection{Exercise 1b}
   We want to use there random numbers to change the uniform RNG to a Gaussian RNG, as in the future we want our numbers to be Gaussian distributed. To go from a uniform random sample to a Gaussian random sample, we use the Box-Muller method. For each pair of random numbers, which are generated from a uniform distribution on the interval $(0,1)$, this gives back 2 random numbers, with a Gaussian distribution with $\mu=0$ and $\sigma=1$. We translate and scale these numbers to get to a different $\mu$ and $\sigma$. We then plot 1000 numbers from our Box-Muller method, with $\mu=2.4,\sigma=3$ and overplot the a true Gaussian and compare the two distributions to each other, so if our Box-Muller method is valid.
   \begin{figure}[h]
    \centering
-   \includegraphics[width=5cm]{plots/Box_muller.png}
-      \caption{A histogram of our Box-Muller method compared to the true Gaussian, the lines are at $\pm4,\pm3,\pm2,\pm1 \sigma$
+   \includegraphics[width=10cm]{plots/Box_muller.png}
+      \caption{A histogram of our Box-Muller method compared to the true Gaussian, the lines are at $\pm4,\pm3,\pm2,\pm1 \sigma$}
    \end{figure}
   
-  The random numbers follow the Gaussian fairly well, this gives us confidende that the method is working correctly. However 
+  \subsection{Exercise 1b}
+  The random numbers follow the Gaussian fairly well, this gives us confident that the method is working correctly. However we will use some statistical tests to validate that our numbers are truly random and Gaussian distributed. For this we first look at the Kolmogorov-Smirnov-test(KS-test).
+  This looks at the maximal distance between the empirical CDF of our generated numbers and the theoretical CDF from the Gaussian distribution for our $\sigma=1$ and $\mu=0$, we will use these mean and standard deviation to generate and test our numbers. This maximum distance we then use with the help from the lectures to derive a p-value and compare this with the value of the scipy-version of the KS-test. The CDF of a Gaussian is given by the following equation:
+  \begin{equation}
+      CDF(x)=0.5\left(1+erf(\frac{c-\mu}{\sqrt{2}\sigma})\right)
+  \end{equation}
+  As the error-function is an integral we will use Romberg integration to solve this. As we will generate a lot of random numbers from 10 to $10^5$, with a spacing of 0.1 dex. It is costly to calculate the integration for all of these numbers, we will first calculate the CDF for 10000 numbers evenly spaced between $[-5,5]$ and use a linear interpolation scheme in between to quickly get the CDF. If a number falls outside of this range, it is unlikely but can still happen, we just use Romberg integration to calculate it for those numbers, so we do not use extrapolation. For the empirical CDF we use the a merge-sorting algorithm on the random numbers and then take the index+1 divided by the length as a value of our CDF. As the index+1 gives all the values less or smaller than that number in a sorted array and the length we use as a normalization factor.
+ The following plots compare the result of the KS-test implemented by ourselves with the ones from scipy.  
+ 
+ 
+ 
+ The KS-test implemented by hand seems to be extremely close to the KS-test of scipy. Only at the low $N$ it seems to deviate. I have no idea why the statistic is different from scipy than my own implementation, but we make an approximation for calculating the p-value, which is not valid if $N$ is small, so this could be an explanation why the p-values do not match.
+  %\begin{figure}[h]
+  % \centering
+  % \includegraphics[width=10cm]{}
+   %   \caption{Our statistic compared to the one calculated by %scipy.}
+%% \begin{figure}[h]
+  % \centering
+  %\includegraphics[width=10cm]{plots/KS_Testp.png}
+  %    \caption{Our p-values compared to the ones generated by %scipy.}
+  % \end{figure}
+  \begin{figure} %use [H] when in multicols
+	\centering
+	\subfloat{{\includegraphics[width=5cm]{plots/KS_Teststat.png} }}
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/KS_Testp.png}}}
+  \caption{The statistic on the left and the p-value on the right from our own implementation, compared to the ones generated by scipy.}
+\end{figure}
+
+  \subsection{Exercise 1d}
   
+  We now look at a different statistical test the Kuipers-test. This looks at the largest positive distance and the largest negative distance and takes statistic from these 2 values. We compare our own implementation with the version from astropy. Again the statistic of the two look very similar, however the p-value does not for the low values. The p-value from astropy seems to be lower than the one from our own implementation.
   
+  \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/Kuipers_Teststat.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/Kuipers_p.png} }}%
+    \caption{The plots for the Kuipers-test and the p-value with it.}
+    \label{fig:example}%
+ 
+  \end{figure}
+
+
+\subsection{Exercise 1e}
+After this we use 10 sets of downloaded random numbers and compare these to our own. This makes use of 2 empirical CDFs, where we will again use the merge-sorting algorithm to calculate the empirical CDF for each of the 2 arrays. We then compare this to the two-sided CDF test by scipy. It is noted that at the small numbers, there is quite some difference between scipy and our own implementation, this is a off by 1 error because we are comparing two empirical CDF's in our algorithm. It is not easily fixed as just adding 1 still gives an error. This means that our test is not good at small samples but performs well on large samples as the off by 1 error is not really affecting the result.
+
+The off by one error also hurts the beginning of our p-value calculation, however once we go to large numbers this off by 1 error again becomes negligible and our implementation is solid.
+
+From the set of random numbers, we reject set 3 and set 5. The p-value of the third set, is consistently to high, and the one from 5 is oscillating very much, even at the high $N$-regime. This behaviour does not look truly random, so we reject the sample.
+
+
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks0.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks_pvalue0.png} }}%
+    \caption{The plots for the two-sided KS-test and the p-value with it, for set 0.}
+
+  \end{figure}
+   \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks1.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks_pvalue1.png} }}%
+    \caption{The plots for the two-sided KS-test and the p-value with it, for set 1.}
+
+  \end{figure}
+   \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks2.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks_pvalue2.png} }}%
+    \caption{The plots for the two-sided KS-test and the p-value with it, for set 2.}
+
+  \end{figure}
+   \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks3.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks_pvalue3.png} }}%
+    \caption{The plots for the two-sided KS-test and the p-value with it, for set 3.}
+    
+  \end{figure}
+  
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks4.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks_pvalue4.png} }}%
+    \caption{The plots for the two-sided KS-test and the p-value with it, for set 4.}
+  
+  \end{figure}
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks5.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks_pvalue5.png} }}%
+    \caption{The plots for the two-sided KS-test and the p-value with it, for set 5.}
+
+  \end{figure}
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks6.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks_pvalue6.png} }}%
+    \caption{The plots for the two-sided KS-test and the p-value with it, for set 6.}
+   
+  \end{figure}
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks7.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks_pvalue7.png} }}%
+    \caption{The plots for the two-sided KS-test and the p-value with it, for set 7.}
+
+  \end{figure}
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks8.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks_pvalue8.png} }}%
+    \caption{The plots for the two-sided KS-test and the p-value with it, for set 8.}
+
+  \end{figure}
+ \begin{figure}
+    \centering
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks9.png} }}%
+    \qquad
+    \subfloat{{\includegraphics[width=5cm]{plots/two_sided_ks_pvalue9.png} }}%
+    \caption{The plots for the two-sided KS-test and the p-value with it, for set 9.}
+
+  \end{figure}
+  
+\lstinputlisting{exercise1.py}

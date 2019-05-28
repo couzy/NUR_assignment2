@@ -1,0 +1,13 @@
+\section{Exercise 6}
+In this exercise we will try to classify the duration of the time of gamma ray bursts. For this we have a set of 235 samples recorded of gamma ray bursts. We have the duration in seconds and the redshift for all of the samples. For some samples we have the metallicity, the star formation rate and the specific star formation rate, the solar mass and the . Missing data is given as a minus 1.
+A gamma ray burst is considered long if the time is 10 seconds or longer, we call this class 1. If the gamma ray burst is less than 10 second, we classify it as short, this is called class 0. We make a logistic regression algorithm with a simple linear model as we want to make a binary classification. We put our missing data to zero to test our model. This gives not a good result as our logistic regression converges to a point where all the gamma ray bursts are classified as long. After inspecting the data this is no surprise: 185 out of the 235 are classified as long, this is around $79\%$. We then tried to put our missing data to the mean of the of the data that was given, this didn't improved the result so we went back to the original idea of putting them to zero. The linear model is probably not sufficient, as it tries to fit a linear combination, where we should go to higher order to make a decent fit. Unfortunately we do not have the time to make improvements on our model, but to get to a better results we should go to higher order for certain parameters, especially the redshift.
+
+\begin{figure}
+   \centering
+   \includegraphics[width=10cm]{plots/GRB.png}
+      \caption{Comparison of our classifier to the true value.}
+\end{figure}
+
+
+
+\lstinputlisting{exercise6.py}
