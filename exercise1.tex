@@ -4,8 +4,8 @@ In this section we make simple routines, which are usefull in the latter part of
 \subsection{Exercise 1a}
 At first we set up is a Random Number Generator(RNG) for the 'continuous' range(0,1). This is done with a combination of a 64-bit XOR shift and after we use a Multiply with Carry on this 64-bit number and use an LCG to get a better pseudo RNG. For our RNG we set the initial seed at 23, so the answers are consistent in the future. 
 
-
-%\lstinputlisting{exercise1.txt}
+The output of this exercise is given by:
+\lstinputlisting{exercise1.txt}
 
 The RNG seems to work fine on the interval (0,1) the $10^6$ numbers are almost evenly distributed with small fluctuations, which are normal for any finite sample.
 \begin{figure}[h]

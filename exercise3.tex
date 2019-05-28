@@ -23,11 +23,27 @@ Applying this to our second order differential equation we get:
 \frac{d^2 D}{dt^2}+\frac{4}{3t}\frac{dD}{d t}=\frac{2}{3t^2} D
 \end{equation}
 
-This is a second order differential equation from the standard 
-
-It has the following analytical solution:
+This is a second order ordinary differential equation.
+Assume a solution of $t^{w}$. Then we get
 \begin{equation}
-D(t)=c_1*t^{2/3}+c_2/t
+    (w)(w-1)t^{w-2}+\frac{4w}{3t}t^{w-1}-\frac{2}{3t^{2}}t^{w}
+\end{equation}
+Multiply all factors by $t^2$.
+\begin{equation}
+    w(w-1)t^{w}+\frac{4w}{3}t^{w}-\frac{2}{3}t^{w}=0
+\end{equation}
+Now divide all factors by $t^{w}$
+\begin{equation}
+    w(w-1)+\frac{4w}{3}-\frac{2}{3}=0
+\end{equation}
+We then find the root of this:
+\begin{equation}
+    w^2+\frac{1w}{3}-\frac{2}{3}=(w+1)(w-2/3)=0
+\end{equation}
+So we have the solution for $w=-1$ and $w=2/3$.
+Now $D$ has the following analytical solution:
+\begin{equation}
+D(t)=c_1t^{2/3}+c_2/t
 \end{equation}
 
 With our initial conditions of.

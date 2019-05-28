@@ -124,7 +124,7 @@ We will test our 3D FFT, with a multivariate Gaussian, we take the center of thi
  If we look at the figures \ref{3dfftxy},\ref{3dfftxz},\ref{3dfftyz} we see that our FFT implementation agrees with the numpy version. But we cannot see really a Gaussian at the center of either of these planes. even if we only have the left half, we would still expect to see some sort of Gaussian tail. Maybe we do not have enough modes to get enough resolution to transform this back to a Gaussian. In the future we should give it more points so the FFT can better reproduce the Gaussian in the Fourier plane. We do not know what goes wrong in the generation of the Gaussian, we tried to make the Gaussian stronger, but it didn't affect the plot, accept for the scaling.
 
 \subsection{Exercise 5f}
-We use the Cloud in Cell mass assignment scheme to create a density field. We then take the 3D-Fourier transform of this field with our own method. Then we loop over the cube and divide each point by the length of the k-vector squared. After this we take the inverse 3D-Fourier transform, again we take the real part as the imaginary part is of the order of $10^{-12}$. We now show the potential in the x-y slices, with values of z as 4,9,11 and 14.
+We use the Cloud in Cell mass assignment scheme to create a density field. We then take the 3D-Fourier transform of this field with our own method. Then we loop over the cube and divide each point by the length of the k-vector squared. After this we take the inverse 3D-Fourier transform, again we take the real part as the imaginary part is of the order of $10^{-12}$. We now show the potential in the x-y slices, with values of z as 4, 9, 11 and 14.
 
  \begin{figure}
     \centering
@@ -146,5 +146,8 @@ We use the Cloud in Cell mass assignment scheme to create a density field. We th
   Finally we want to compute the gradient of the potential. For this we will use the mid point rule, as this is a method to get a derivative. For the gradient in the x-direction we shift our array 1 place in the positive direction and the negative direction. After this we take the difference and divide it by 2. This gives us an approximation for the gradient of the potential. This procedure is then repeated for the y and z directions so we get a 3D-gradient. 
   When we have a gradient for the grid, we use a reverse Cloud in Cell method to give the potential back to the particles, we use the formula's from \url{http://background.uchicago.edu/~whu/Courses/Ast321_11/pm.pdf} and compute the potential for the first 10 particles. and output those.
   
+  The output of this exercise is given by:
+\lstinputlisting{exercise5.txt}
+
   
-  \lstinputlisting{exercise5.py}
+\lstinputlisting{exercise5.py}
