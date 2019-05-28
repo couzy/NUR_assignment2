@@ -58,7 +58,7 @@ ffmpeg -framerate 30 -pattern_type glob -i "plots/ysnap*.png" -s:v 640x480 -c:v 
 ffmpeg -framerate 30 -pattern_type glob -i "plots/zsnap*.png" -s:v 640x480 -c:v libx264 -profile:v high -level 4.0 -crf 10 -tune animation -preset slow -pix_fmt yuv420p -r 25 -threads 0 -f mp4 Zeldovichzslice.mp4
 
 echo "Create the report"
-pdflatex template.tex
-bibtex template.aux
-pdflatex template.tex
-pdflatex template.tex
+pdflatex answers.tex
+bibtex answers.aux
+pdflatex answers.tex
+pdflatex answers.tex
