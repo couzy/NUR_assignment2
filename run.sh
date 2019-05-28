@@ -19,7 +19,7 @@ if [ ! -e randomnumbers.txt ]; then
 fi
 
 echo "Download data for GRB classification"
-if [ !-e GRBs.txt ]; then
+if [ ! -e GRBs.txt ]; then
   wget strw.leidenuniv.nl/~nobels/coursedata/GRBs.txt
 fi
 
