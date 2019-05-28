@@ -132,7 +132,7 @@ def Potential_calculation(positions):
 	return potential		
 '''
 Calculates the gradient at each point of the grid of the potential we use the central difference method to calculate the gradient, and use the np.roll function to easily shift our 
-
+We use numpy.roll cause that's how we roll.
 '''
 def gradient_potential(potential):
 	grad=np.zeros((16,16,16,3))
