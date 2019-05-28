@@ -338,7 +338,7 @@ multivariate_gaussian[:,:,:]=10**(5)/((2*np.pi)**(3/2))*np.exp(-(x**2+y**2+z**2)
 Make the plots of the 3D FFT
 '''
 
-plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).abs)[15,:,:])
+plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).real)[15,:,:])
 plt.colorbar()
 plt.xlabel('k_y')
 plt.ylabel('k_z')
@@ -346,7 +346,7 @@ plt.title('y-z slice multivariate gaussian')
 plt.savefig('plots/FFTnpyz.png')
 plt.close()
 
-plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).abs)[:,15,:])
+plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).real)[:,15,:])
 plt.colorbar()
 plt.xlabel('k_x')
 plt.ylabel('k_z')
@@ -354,7 +354,7 @@ plt.title('x-z slice multivariate gaussian')
 plt.savefig('plots/FFTnpxz.png')
 plt.close()
 
-plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).abs)[:,:,15])
+plt.imshow(np.fft.fftshift(np.fft.fftn(multivariate_gaussian).real)[:,:,15])
 plt.colorbar()
 plt.xlabel('k_x')
 plt.ylabel('k_y')
@@ -365,7 +365,7 @@ plt.close()
 '''
 Making the numpy 3D FFT plots
 '''
-plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).abs)[15,:,:])
+plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).real)[15,:,:])
 plt.colorbar()
 plt.xlabel('k_y')
 plt.ylabel('k_z')
@@ -373,7 +373,7 @@ plt.title('y-z slice multivariate gaussian')
 plt.savefig('plots/FFTyz.png')
 plt.close()
 
-plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).abs)[:,15,:])
+plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).real)[:,15,:])
 plt.colorbar()
 plt.xlabel('k_x')
 plt.ylabel('k_z')
@@ -381,7 +381,7 @@ plt.title('x-z slice multivariate gaussian')
 plt.savefig('plots/FFTxz.png')
 plt.close()
 
-plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).abs)[:,:,15])
+plt.imshow(np.fft.fftshift(FFT_3D(multivariate_gaussian).real)[:,:,15])
 plt.colorbar()
 plt.xlabel('k_x')
 plt.ylabel('k_y')
