@@ -33,7 +33,7 @@ We will check the robustness of our implementation and let a particle go in the 
 
 
 \subsection{Exercise 5c}
-The second mass assignment scheme is the Cloud in Cell(CIC) method. For this method we do not assign all the mass of the particle to 1 grid point, but rather assign the mass to the neighbouring points, where more mass is assigned to a point if it is closer by. For implementation we use the formulas from \url{http://background.uchicago.edu/~whu/Courses/Ast321_11/pm.pdf}. 
+The second mass assignment scheme is the Cloud in Cell(CIC) method. For this method we do not assign all the mass of the particle to 1 grid point, but rather assign the mass to the neighbouring points, where more mass is assigned to a point if it is closer by. For implementation we use the formulas from \url{http://background.uchicago.edu/~whu/Courses/Ast321_11/pm.pdf}. Again the centers of our cells are placed at the half points. So the first cell is centered around $(0.5,0.5,0.5)$. Then the distance is calculated to the point and we assign the mass to the neighbouring cells to which it is. In each dimension we assign the mass to two cells, so each particles assigns mass to 8 different cells.
 
  \begin{figure}
     \centering
@@ -70,8 +70,7 @@ We will now write our own 1dimensional FFT algorithm, we use a recursive algorit
 \end{split}
 \end{equation}
 
-We check our own FFT algorithm with a simple function. We use a constant function of ones, to see if it works and compare it with the numpy version of the FFT-algorithm. The Fourier Transform of  constant function is a delta function, and our results are consistent with the numpy version of the FFT. In the end, we also test for a small amount of random numbers so we are assured that our FFT is correct. The figure  from our FFT look exactly the same as those from numpy, this reassures that we have a functional FFT-algorithm. We only plot the real values below, all the complex values are zero, so this will not affect the result.
-
+We check our own FFT algorithm with a simple function. We use a constant function of ones, to see if it works and compare it with the numpy version of the FFT-algorithm. The Fourier Transform of  constant function is a delta function, and our results are consistent with the numpy version of the FFT. In the end, we also test for a small amount of random numbers so we are assured that our FFT is correct. The figure  from our FFT look exactly the same as those from numpy, this reassures that we have a functional FFT-algorithm. We only plot the real values below, all the complex values are zero, so this will not affect the result. The delta function is not perfectly aligned with our own implementation, this is probably a index error, which we didn't fix.
 \begin{figure}
     \centering
     \includegraphics{plots/FFT1D.png}
@@ -122,7 +121,7 @@ We will test our 3D FFT, with a multivariate Gaussian, we take the center of thi
     \caption{The FFT of our multivariate Gaussian, in the y-z slice, the left is our own 3D FFT, the right is the numpy version we have taken the 16th slice of 32 slices.}
     \label{3dfftyz}
   \end{figure}
- If we look at the figures \ref{3dfftxy},\ref{3dfftxz},\ref{3dfftyz} we see that our FFT implementation agrees with the numpy version. But we cannot see really a Gaussian at the center of either of these planes. even if we only have the left half, we would still expect to see some sort of Gaussian tail. Maybe we do not have enough modes to get enough resolution to transform this back to a Gaussian. In the future we should give it more points so the FFT can better reproduce the Gaussian in the Fourier plane.
+ If we look at the figures \ref{3dfftxy},\ref{3dfftxz},\ref{3dfftyz} we see that our FFT implementation agrees with the numpy version. But we cannot see really a Gaussian at the center of either of these planes. even if we only have the left half, we would still expect to see some sort of Gaussian tail. Maybe we do not have enough modes to get enough resolution to transform this back to a Gaussian. In the future we should give it more points so the FFT can better reproduce the Gaussian in the Fourier plane. We do not know what goes wrong in the generation of the Gaussian, we tried to make the Gaussian stronger, but it didn't affect the plot, accept for the scaling.
 
 \subsection{Exercise 5f}
 We use the Cloud in Cell mass assignment scheme to create a density field. We then take the 3D-Fourier transform of this field with our own method. Then we loop over the cube and divide each point by the length of the k-vector squared. After this we take the inverse 3D-Fourier transform, again we take the real part as the imaginary part is of the order of $10^{-12}$. We now show the potential in the x-y slices, with values of z as 4,9,11 and 14.
