@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.fftpack import ifft2
-from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 class RNG_class:
@@ -175,7 +174,7 @@ Making the movie
 '''
 a_range=np.linspace(0.0025,1,101)
 	
-for j in tqdm(range(0,100)):
+for j in (range(0,100)):
 	a=np.float(0.0025+(1-0.0025)/100*j)
 	plt.scatter(particles[j][0],particles[j][1],s=1.)
 	plt.xlabel('x (Mpc)')
@@ -235,7 +234,7 @@ momentum_3D=np.asarray(momentum_3D)
 Loop over the scale-factor for the movie
 '''
 
-for j in tqdm(range(0,100)):
+for j in (range(0,100)):
 	a=np.float(1/51+(1-0.0025)/100*j)
 	mask=(particles_3[j,2,:,:,:]>=31.5)&(particles_3[j,2,:,:,:]<32.5)
 	plt.scatter(particles_3[j,0,mask],(particles_3[j,1,mask]),s=1.)
