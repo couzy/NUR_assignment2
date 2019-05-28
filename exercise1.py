@@ -207,9 +207,7 @@ plt.title('distribution of first 1000 numbers')
 plt.savefig('plots/numbers1000.png')
 plt.close()
 
-plt.hist(rng,bins=np.linspace(0,1,21))
-#plt.axhline(50000-2*np.sqrt(50000),linestyle='dashed')
-#plt.axhline(50000+2*np.sqrt(50000),linestyle='dashed')
+plt.hist(rng,bins=np.linspace(0,1,21),edgecolor='black')
 plt.xlabel('numbers generated')
 plt.ylabel('relative counts')
 plt.savefig('plots/distribution.png')
@@ -318,7 +316,6 @@ for i in range(0,10):
 	l=0
 	for j in (np.logspace(1,5,41)):
 		k=int(j)
-		#tested_values.append(KS_test_2(BM_2[:k],Random[:,i][:k]))
 		tested_values[i,l]=KS_test_2(BM_2[:k],Random[:,i][:k])
 		scip_values[i,l]=scip.ks_2samp(BM_2[:k],Random[:,i][:k])
 		l+=1
