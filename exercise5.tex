@@ -143,7 +143,7 @@ We use the Cloud in Cell mass assignment scheme to create a density field. We th
   \end{figure}
   
   \subsection{Exercise 5g}
-  Finally we want to compute the gradient of the potential. For this we will use the mid point rule, as this is a method to get a derivative. For the gradient in the x-direction we shift our array 1 place in the positive direction and the negative direction. After this we take the difference and divide it by 2. This gives us an approximation for the gradient of the potential. This procedure is then repeated for the y and z directions so we get a 3D-gradient. 
+  Finally we want to compute the gradient of the potential. For this we will use the central difference emthod, as this is a method to get a derivative. For the gradient in the x-direction we shift our array 1 place in the positive direction and the negative direction. After this we take the difference and divide it by 2. This gives us an approximation for the gradient of the potential. This procedure is then repeated for the y and z directions so we get a 3D-gradient. 
   When we have a gradient for the grid, we use a reverse Cloud in Cell method to give the potential back to the particles, we use the formula's from \url{http://background.uchicago.edu/~whu/Courses/Ast321_11/pm.pdf} and compute the potential for the first 10 particles. and output those.
   
   The output of this exercise is given by:
