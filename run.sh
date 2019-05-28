@@ -14,7 +14,7 @@ if [ ! -e randomnumbers.txt ]; then
 fi
 
 echo "Download data for quad-tree particles"
-if [ ! -e randomnumbers.txt ]; then
+if [ ! -e colliding.hdf5 ]; then
   wget strw.leidenuniv.nl/~nobels/coursedata/colliding.hdf5
 fi
 
