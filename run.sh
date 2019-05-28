@@ -8,7 +8,7 @@ if [ ! -d "plots" ]; then
   mkdir plots
 fi
 
-echo "Download data for satellite of halos"
+echo "Download data for random numbers"
 if [ ! -e randomnumbers.txt ]; then
   wget https://home.strw.leidenuniv.nl/~nobels/coursedata/randomnumbers.txt
 fi
