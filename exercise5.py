@@ -131,7 +131,7 @@ def Potential_calculation(positions):
 	potential=FFT_3D(Fourier_density_field,True)
 	return potential		
 '''
-Calculates the gradient at each point of the grid of the potential we use the midpoint rule to calculate the gradient, and use the np.roll function to easily shift our 
+Calculates the gradient at each point of the grid of the potential we use the central difference method to calculate the gradient, and use the np.roll function to easily shift our 
 
 '''
 def gradient_potential(potential):
